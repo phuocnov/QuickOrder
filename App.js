@@ -1,20 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import { NavigationContainer } from '@react-navigation/native'
+import HomePage from './src/screens/home/home'
+import HistoryPage from './src/screens/history/history'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import OrderPage from './src/screens/orders/order'
+import ProfilePage from './src/screens/profile/profile'
+import store from './src/redux/store'
+import { Provider } from 'react-redux'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import LoginPage from './src/screens/auth/login'
+import SignupPage from './src/screens/auth/signup'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+const Tab = createBottomTabNavigator()
+const Stack = createNativeStackNavigator()
+const noHeaderOptions = {
+  headerShown: false
 }
+store.getState()
+export default function App () {
+  return (
+    <Provider store={store}>
+      <NavigationContainer>
+        {store.getState().auth.isLogin
+          ? <Tab.Navigator>
+        <Tab.Screen name='Home' component={HomePage} options={noHeaderOptions} />
+        <Tab.Screen name='History' component={HistoryPage} options={noHeaderOptions} />
+        <Tab.Screen name='Order' component={OrderPage} options={noHeaderOptions} />
+        <Tab.Screen name='Profile' component={ProfilePage} options={noHeaderOptions} />
+      </Tab.Navigator>
+          : <Stack.Navigator>
+          <Stack.Screen name="Login" component={LoginPage} options={noHeaderOptions} />
+          <Stack.Screen name="Sign up" component={SignupPage} options={noHeaderOptions}/>
+        </Stack.Navigator>
+      }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+      </NavigationContainer>
+    </Provider>
+  )
+}
