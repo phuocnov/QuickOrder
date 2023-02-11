@@ -4,7 +4,7 @@ import storage from '../helper/storage'
 const slice = createSlice({
   name: 'auth',
   initialState: {
-    isLogin: false
+    isLogin: true
   },
   reducers: {
     login: state => {
