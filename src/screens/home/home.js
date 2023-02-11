@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { Flex, Box, Wrap } from '@react-native-material/core'
 import React from 'react'
 import { StyleSheet, View, Text, useWindowDimensions, Image } from 'react-native'
+import MySearchBar from '../../components/searchBar'
 
 export default function HomePage () {
   const { width } = useWindowDimensions()
@@ -13,7 +14,7 @@ export default function HomePage () {
     },
     header: {
       backgroundColor: '#fff',
-      height: 390,
+      height: 420,
       width
     },
     headerText: {
@@ -42,10 +43,8 @@ export default function HomePage () {
               <Ionicons style={{ ...style.headerText, fontSize: 16 }} name='call-outline'></Ionicons>
               <Text style={style.headerText} >Số điện thoại đặt hàng: 0346 343 459</Text>
             </Wrap>
+            <MySearchBar/>
           </Box>
-        </Box>
-        <Box style={style.header}>
-          <Text>HomePage</Text>
         </Box>
       </Flex>
     </View>

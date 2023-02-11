@@ -75,7 +75,7 @@ export default function MyTabBar ({ state, descriptors, navigation }) {
 const style = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 40
+    height: 60
   },
   button: {
     flex: 1,
