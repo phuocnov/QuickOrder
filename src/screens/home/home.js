@@ -6,8 +6,9 @@ import CategoryButton from '../../components/categoryButton'
 import Item from '../../components/item'
 import MySearchBar from '../../components/searchBar'
 import { Flex } from 'react-native-flex-layout'
+import PropTypes from 'prop-types'
 
-export default function HomePage () {
+export default function HomePage ({ navigation }) {
   const { width, height } = useWindowDimensions()
   const style = StyleSheet.create({
     screen: {
@@ -25,7 +26,9 @@ export default function HomePage () {
       fontFamily: 'Roboto_400Regular'
     }
   })
-
+  function gotoDetail () {
+    navigation.navigate('product-detail')
+  }
   return (
     <View style={{ display: 'flex', width, height, flex: 1 }}>
       <ScrollView style={{ flex: 1 }}>
@@ -60,7 +63,7 @@ export default function HomePage () {
           </Flex>
         </Box>
         <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row' }}>
-          <Item />
+          <Item handleClick={gotoDetail}/>
           <Item />
           <Item />
           <Item />
@@ -70,4 +73,8 @@ export default function HomePage () {
       </ScrollView>
     </View >
   )
+}
+
+HomePage.propTypes = {
+  navigation: PropTypes.any
 }

@@ -4,12 +4,12 @@ import store from '../redux/store'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MyTabBar from '../components/bottomNavigationBar'
-import HomePage from '../screens/home/home'
 import HistoryPage from '../screens/history/history'
 import OrderPage from '../screens/orders/order'
 import ProfilePage from '../screens/profile/profile'
 import LoginPage from '../screens/auth/login'
 import SignupPage from '../screens/auth/signup'
+import RootHomepage from '../screens/home/rootHomePage'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator()
@@ -22,7 +22,7 @@ export default function MyNavigator () {
     <NavigationContainer>
       {store.getState().auth.isLogin
         ? <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
-          <Tab.Screen name='Home' component={HomePage} options={noHeaderOptions} />
+          <Tab.Screen name='Home' component={RootHomepage} options={noHeaderOptions} />
           <Tab.Screen name='History' component={HistoryPage} options={noHeaderOptions} />
           <Tab.Screen name='Order' component={OrderPage} options={noHeaderOptions} />
           <Tab.Screen name='Profile' component={ProfilePage} options={noHeaderOptions} />
