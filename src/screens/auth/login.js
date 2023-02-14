@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { Input } from '@rneui/themed';
-import { Button } from '@rneui/themed';
+import { Button, Icon } from '@rneui/themed';
 export default function LoginPage () {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -37,6 +37,7 @@ export default function LoginPage () {
           </Text>
         </Text>  
     </View>
+    
   )
 }
 const styles = StyleSheet.create({
@@ -74,3 +75,4 @@ const styles = StyleSheet.create({
   
   
 });
+
