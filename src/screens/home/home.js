@@ -64,11 +64,12 @@ export default function HomePage ({ navigation }) {
         </Box>
         <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row' }}>
           <Item handleClick={gotoDetail}/>
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
+          <Item handleClick={gotoDetail}/>
+          <Item handleClick={gotoDetail}/>
+          <Item handleClick={gotoDetail}/>
+          <Item handleClick={gotoDetail}/>
+          <Item handleClick={gotoDetail}/>
+
         </View>
       </ScrollView>
     </View >
