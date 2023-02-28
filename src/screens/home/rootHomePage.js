@@ -1,12 +1,21 @@
 import React from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomePage from './home'
-import ProductDetail from './productDetail'
+import MyTabBar from '../../components/bottomNavigationBar'
+import HistoryPage from '../history/history'
+import OrderPage from '../orders/order'
+import ProfilePage from '../profile/profile'
 
-const Stack = createNativeStackNavigator()
+const noHeaderOptions = {
+  headerShown: false
+}
+const Tab = createBottomTabNavigator()
+
 export default function RootHomepage () {
-  return <Stack.Navigator>
-    <Stack.Screen name='home' component={HomePage} options={{ headerShown: false }}/>
-    <Stack.Screen name='product-detail' component={ProductDetail} options={{ headerShown: false }}/>
-  </Stack.Navigator>
+  return <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
+    <Tab.Screen name='Home' component={HomePage} options={noHeaderOptions} />
+    <Tab.Screen name='History' component={HistoryPage} options={noHeaderOptions} />
+    <Tab.Screen name='Order' component={OrderPage} options={noHeaderOptions} />
+    <Tab.Screen name='Profile' component={ProfilePage} options={noHeaderOptions} />
+  </Tab.Navigator>
 }

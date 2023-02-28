@@ -3,7 +3,7 @@ import React from 'react'
 import { Button, TextInput, View } from 'react-native'
 import { Formik } from 'formik'
 
-export default function MyReactNativeForm (props) {
+export default function HistoryPage (props) {
   <Formik
     initialValues={{ email: '' }}
     onSubmit={values => console.log(values)}

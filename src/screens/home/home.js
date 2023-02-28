@@ -1,15 +1,22 @@
 import { Ionicons } from '@expo/vector-icons'
 import { Box, Wrap } from '@react-native-material/core'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, View, Text, useWindowDimensions, Image, ScrollView } from 'react-native'
 import CategoryButton from '../../components/categoryButton'
 import Item from '../../components/item'
 import MySearchBar from '../../components/searchBar'
 import { Flex } from 'react-native-flex-layout'
 import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
+import { categoryActions } from '../../redux/category'
+import store from '../../redux/store'
+import { drinkItemActions } from '../../redux/drinkItem'
 
 export default function HomePage ({ navigation }) {
   const { width, height } = useWindowDimensions()
+  const dispatch = useDispatch()
+  const cateSelected = useSelector(state => state.category.selected)
+  const drinksList = useSelector(state => state.drink.drinks)
   const style = StyleSheet.create({
     screen: {
       flex: 1,
@@ -26,9 +33,11 @@ export default function HomePage ({ navigation }) {
       fontFamily: 'Roboto_400Regular'
     }
   })
-  function gotoDetail () {
-    navigation.navigate('product-detail')
+  function gotoDetail (id) {
+    navigation.navigate('product-detail', { drinkId: id })
   }
+  useEffect(() => {
+  }, [cateSelected, drinksList])
   return (
     <View style={{ display: 'flex', width, height, flex: 1 }}>
       <ScrollView style={{ flex: 1 }}>
@@ -52,24 +61,27 @@ export default function HomePage ({ navigation }) {
           </Box>
 
           <Flex wrap={true} style={{ backgroundColor: '#eee', width, height: 100, marginTop: 20 }}>
-            <CategoryButton selected={true} />
-            <CategoryButton selected={false} />
-            <CategoryButton selected={false} />
-            <CategoryButton selected={false} />
-            <CategoryButton selected={false} />
-            <CategoryButton selected={false} />
-            <CategoryButton selected={false} />
-            <CategoryButton selected={false} />
+            {store.getState().category.categories.map((cate, index) => {
+              return <CategoryButton
+                key={index}
+                selected={cate.id === store.getState().category.selected}
+                title={cate.name}
+                onPress={() => {
+                  if (store.getState().category.selected !== -1) {
+                    dispatch(categoryActions.select(-1))
+                    dispatch(drinkItemActions.filterByTag(-1))
+                  } else {
+                    dispatch(categoryActions.select(cate.id))
+                    dispatch(drinkItemActions.filterByTag(cate.id))
+                  }
+                }} />
+            })}
           </Flex>
         </Box>
         <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row' }}>
-          <Item handleClick={gotoDetail}/>
-          <Item handleClick={gotoDetail}/>
-          <Item handleClick={gotoDetail}/>
-          <Item handleClick={gotoDetail}/>
-          <Item handleClick={gotoDetail}/>
-          <Item handleClick={gotoDetail}/>
-
+          {store.getState().drink.drinks.map((drink, index) => {
+            return <Item handleClick={() => gotoDetail(drink.drinkID)} key={`drink ${index}`} title={drink.drinkName} price={drink.size[0].price} />
+          })}
         </View>
       </ScrollView>
     </View >

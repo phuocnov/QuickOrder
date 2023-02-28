@@ -1,8 +1,9 @@
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import PropTypes from 'prop-types'
+import { formatCurrency } from 'react-native-format-currency'
 
-export default function Item ({ handleClick }) {
+export default function Item ({ handleClick, title, price }) {
   return <TouchableOpacity
     onPress={handleClick}
     style={{
@@ -22,8 +23,8 @@ export default function Item ({ handleClick }) {
         borderRadius: 8,
         alignSelf: 'center'
       }} />
-    <Text style={style.drinkName}>Cà phê sữa nóng</Text>
-    <Text style={style.price}>30.000VND</Text>
+    <Text style={style.drinkName}>{title}</Text>
+    <Text style={style.price}>{formatCurrency({ amount: price, code: 'VND' })[0]}</Text>
   </TouchableOpacity>
 }
 
@@ -44,5 +45,7 @@ const style = StyleSheet.create({
 })
 
 Item.propTypes = {
-  handleClick: PropTypes.func
+  handleClick: PropTypes.func,
+  title: PropTypes.string,
+  price: PropTypes.number
 }
