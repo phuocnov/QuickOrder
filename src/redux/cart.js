@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-
+import storage from '../helper/storage'
 const slice = createSlice({
   name: 'cart',
   initialState: {
@@ -19,6 +19,12 @@ const slice = createSlice({
     },
     calculatePrice: (state) => {
 
+    },
+    saveToStorage: (state) => {
+      storage.set('cart', state)
+    },
+    loadFromStorage: (state) => {
+      state = storage.get('cart')
     }
   }
 })

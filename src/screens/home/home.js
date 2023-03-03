@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { categoryActions } from '../../redux/category'
 import store from '../../redux/store'
 import { drinkItemActions } from '../../redux/drinkItem'
+import CartButton from '../../components/cartButton'
 
 export default function HomePage ({ navigation }) {
   const { width, height } = useWindowDimensions()
@@ -35,6 +36,9 @@ export default function HomePage ({ navigation }) {
   })
   function gotoDetail (id) {
     navigation.navigate('product-detail', { drinkId: id })
+  }
+  function gotoCart () {
+    navigation.navigate('shopping-cart')
   }
   useEffect(() => {
   }, [cateSelected, drinksList])
@@ -84,6 +88,7 @@ export default function HomePage ({ navigation }) {
           })}
         </View>
       </ScrollView>
+      <CartButton handleClick={() => gotoCart()}/>
     </View >
   )
 }

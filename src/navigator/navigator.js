@@ -6,6 +6,7 @@ import LoginPage from '../screens/auth/login'
 import SignupPage from '../screens/auth/signup'
 import RootHomepage from '../screens/home/rootHomePage'
 import ProductDetail from '../screens/home/productDetail'
+import ShoppingCart from '../screens/home/shoppingCart'
 
 const Stack = createNativeStackNavigator()
 const noHeaderOptions = {
@@ -19,6 +20,7 @@ export default function MyNavigator () {
         ? <Stack.Navigator>
           <Stack.Screen name='home' component={RootHomepage} options={{ headerShown: false }} />
           <Stack.Screen name='product-detail' component={ProductDetail} options={{ headerShown: false }} />
+          <Stack.Screen name='shopping-cart' component={ShoppingCart} options={{ headerShown: false }} />
         </Stack.Navigator>
         : <Stack.Navigator>
             <Stack.Screen name="Login" component={LoginPage} options={noHeaderOptions} />

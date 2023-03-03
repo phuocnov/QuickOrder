@@ -15,6 +15,11 @@ const sampleCategoryDatas = [
     id: 2,
     value: 'tea',
     name: 'Trà'
+  },
+  {
+    id: 3,
+    value: 'soft-drink',
+    name: 'Nước ngọt'
   }
 ]
 

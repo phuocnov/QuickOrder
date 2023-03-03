@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Image, Text, useWindowDimensions, StyleSheet, ScrollView } from 'react-native'
 import PropTypes from 'prop-types'
 import BackButton from '../../components/backButton'
@@ -26,7 +26,8 @@ export default function ProductDetail ({ route, navigation }) {
       size: 'S',
       toppings: [],
       note: '',
-      number: 1
+      number: 1,
+      price: 0
     },
     onSubmit: (values) => {
       dispatch(cartActions.addItem(values))
@@ -56,6 +57,7 @@ export default function ProductDetail ({ route, navigation }) {
       formik.setFieldValue('number', number)
     }
   }
+
   useEffect(() => {
     caculateItemPrice()
   }, [formik])
@@ -159,8 +161,10 @@ export default function ProductDetail ({ route, navigation }) {
           color={'#F6AC31'}
           titleStyle={{ color: '#fff' }}
           onPress={() => {
-            formik.submitForm()
-            navigation.goBack()
+            formik.setFieldValue('price', price).then(() => {
+              formik.submitForm()
+              navigation.goBack()
+            })
           }} />
       </Box>
       <BackButton clickHandler={() => { navigation.goBack() }} />
