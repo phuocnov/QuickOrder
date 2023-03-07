@@ -31,7 +31,8 @@ export default function ProductDetail ({ route, navigation }) {
     },
     onSubmit: (values) => {
       dispatch(cartActions.addItem(values))
-      console.log(store.getState().cart.items)
+      dispatch(cartActions.calculatePrice())
+      dispatch(cartActions.saveToStorage())
     }
   })
 

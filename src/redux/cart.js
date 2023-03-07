@@ -18,13 +18,19 @@ const slice = createSlice({
       state.items = []
     },
     calculatePrice: (state) => {
-
+      let price = 0
+      state.items.map(item => {
+        price += item.price
+        return price
+      })
+      state.totalPrice = price
     },
     saveToStorage: (state) => {
       storage.set('cart', state)
     },
-    loadFromStorage: (state) => {
-      state = storage.get('cart')
+    loadCart: (state, actions) => {
+      state.items = actions.payload.items
+      state.totalPrice = actions.payload.totalPrice
     }
   }
 })

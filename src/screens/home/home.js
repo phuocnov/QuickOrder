@@ -12,6 +12,8 @@ import { categoryActions } from '../../redux/category'
 import store from '../../redux/store'
 import { drinkItemActions } from '../../redux/drinkItem'
 import CartButton from '../../components/cartButton'
+import storage from '../../helper/storage'
+import { cartActions } from '../../redux/cart'
 
 export default function HomePage ({ navigation }) {
   const { width, height } = useWindowDimensions()
@@ -42,6 +44,14 @@ export default function HomePage ({ navigation }) {
   }
   useEffect(() => {
   }, [cateSelected, drinksList])
+
+  // Load cart from storage on startup
+  storage.get('cart').then(value => {
+    if (store.getState().cart.items.length === 0 && value !== null) {
+      dispatch(cartActions.loadCart(value))
+    }
+  })
+
   return (
     <View style={{ display: 'flex', width, height, flex: 1 }}>
       <ScrollView style={{ flex: 1 }}>

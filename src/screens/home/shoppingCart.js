@@ -1,6 +1,6 @@
-import { Box, Flex, Spacer, Text } from '@react-native-material/core'
+import { Box, Divider, Flex, Spacer, Text } from '@react-native-material/core'
 import React from 'react'
-import { Image, ScrollView, useWindowDimensions, View, StyleSheet } from 'react-native'
+import { Image, ScrollView, useWindowDimensions, View, StyleSheet, TouchableOpacity } from 'react-native'
 import BackButton from '../../components/backButton'
 import PropTypes from 'prop-types'
 import AddressBar from '../../components/shoppingCart/addressBar'
@@ -31,11 +31,10 @@ export default function ShoppingCart ({ navigation }) {
         <Text style={{ textAlign: 'left', margin: 25, marginBottom: 10 }}>Chi tiết đơn hàng</Text>
 
         {store.getState().cart.items.map((item, index) => {
-          console.log(item)
           return <Box key={index} style={{ width: width * 0.9, marginLeft: 20 }}>
             <Flex direction='row'>
-              <Image style={{ width: 80, height: 80, borderRadius: 20 }} source={require('../../../assets/image/coffee.jpg')}/>
-              <Spacer/>
+              <Image style={{ width: 80, height: 80, borderRadius: 20 }} source={require('../../../assets/image/coffee.jpg')} />
+              <Spacer />
               <Box style={{ width: 300, marginLeft: 20 }}>
                 <Text style={style.drinkText}>{item.drinkData.drinkName}</Text>
                 <Text style={style.detailText}>{`Size: ${item.size}`}</Text>
@@ -47,10 +46,15 @@ export default function ShoppingCart ({ navigation }) {
             </Flex>
           </Box>
         })}
+        <Divider />
+        <TouchableOpacity onPress={() => { navigation.goBack() }} >
+          <Text style={{ textAlign: 'center', color: '#F6AB31', marginVertical: 10 }}>+ Thêm sản phẩm</Text>
+        </TouchableOpacity>
       </Box>
+      <Box style={{ height: 300 }}/>
     </ScrollView>
     <BackButton clickHandler={() => { navigation.goBack() }} />
-    <OrderFooter/>
+    <OrderFooter />
   </View>
 }
 

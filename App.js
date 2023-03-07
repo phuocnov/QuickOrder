@@ -5,10 +5,10 @@ import MyNavigator from './src/navigator/navigator'
 import * as SplashScreen from 'expo-splash-screen'
 import FontLoader from './src/components/fontLoader'
 
-store.getState()
 SplashScreen.preventAutoHideAsync()
 export default function App () {
   const fontsLoaded = FontLoader()
+
   useEffect(() => {
     if (fontsLoaded) {
       // Hide the splash screen after the fonts have loaded and the

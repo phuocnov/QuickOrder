@@ -1,9 +1,21 @@
 import { Box, Button, Divider, Flex, Spacer, Text } from '@react-native-material/core'
 import React from 'react'
 import { useWindowDimensions, StyleSheet } from 'react-native'
+import store from '../../redux/store'
+import { formatCurrency } from 'react-native-format-currency'
+import { useFormik } from 'formik'
 
 export default function OrderFooter () {
   const { width } = useWindowDimensions()
+  const formik = useFormik({
+    initialValues: {
+      location: '',
+      orderDetail: store.getState().cart
+    },
+    onSubmit: (values) => {
+      console.log(values)
+    }
+  })
   return <Box style={{ position: 'absolute', width, bottom: 1, backgroundColor: '#fff', height: 250, padding: 15 }}>
     <Flex direction='row' style={{ marginBottom: 10 }}>
       <Text style={style.leftColumn}>Thanh toán</Text>
@@ -15,22 +27,22 @@ export default function OrderFooter () {
     <Flex direction='row'style={{ marginTop: 10 }}>
       <Text style={style.leftColumn}>Tạm tính</Text>
       <Spacer/>
-      <Text style={style.rightColumn}>20,000VNĐ</Text>
+      <Text style={style.rightColumn}>{formatCurrency({ amount: store.getState().cart.totalPrice, code: 'VND' })[0]}</Text>
     </Flex>
     <Flex direction='row' style={{ marginTop: 10 }}>
       <Text style={style.leftColumn}>Khuyến mãi</Text>
       <Spacer/>
-      <Text style={style.rightColumn}>0VNĐ</Text>
+      <Text style={style.rightColumn}>{formatCurrency({ amount: 0, code: 'VND' })[0]}</Text>
     </Flex>
     <Flex direction='row' style={{ marginTop: 10 }}>
       <Text style={style.leftColumn}>Phí giao hàng</Text>
       <Spacer/>
-      <Text style={style.rightColumn}>20,000VNĐ</Text>
+      <Text style={style.rightColumn}>{formatCurrency({ amount: 20000, code: 'VND' })[0]}</Text>
     </Flex>
     <Flex direction='row' style={{ marginTop: 10 }}>
       <Text style={style.leftColumn}>Tổng tiền</Text>
       <Spacer/>
-      <Text style={style.rightColumn}>20,000VNĐ</Text>
+      <Text style={style.rightColumn}>{formatCurrency({ amount: store.getState().cart.totalPrice + 20000, code: 'VND' })[0]}</Text>
     </Flex>
 
     <Button title="Xác nhận" color='#F6AB31' titleStyle={{ color: '#fff' }} style={{ marginTop: 10 }}/>
