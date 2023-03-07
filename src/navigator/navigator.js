@@ -27,8 +27,8 @@ export default function MyNavigator () {
           <Stack.Screen name='shopping-cart' component={ShoppingCart} options={{ headerShown: false }} />
         </Stack.Navigator>
         : <Stack.Navigator>
-          <Stack.Screen name="Login" component={LoginPage} options={noHeaderOptions} />
-          <Stack.Screen name="Sign up" component={SignupPage} options={noHeaderOptions} />
+          <Stack.Screen name="login" component={LoginPage} options={noHeaderOptions} />
+          <Stack.Screen name="sign-up" component={SignupPage} options={noHeaderOptions} />
         </Stack.Navigator>
       }
     </NavigationContainer>

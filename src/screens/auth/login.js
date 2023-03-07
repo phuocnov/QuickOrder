@@ -46,7 +46,7 @@ export default function LoginPage ({ navigation }) {
       </TouchableOpacity>
       <Flex direction='row'>
         <Text style={{ fontFamily: 'Roboto_400Regular' }}>Chưa có tài khoản? </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => { navigation.navigate('sign-up') }}>
           <Text style={style.pressableText}>Đăng ký ngay</Text>
         </TouchableOpacity>
       </Flex>
