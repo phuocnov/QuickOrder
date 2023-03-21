@@ -2,13 +2,18 @@ import { Button, Flex } from '@react-native-material/core'
 import { useFormik } from 'formik'
 import React from 'react'
 import { View, Text, useWindowDimensions, TouchableOpacity, StyleSheet } from 'react-native'
-import { useDispatch } from 'react-redux'
 import MyAuthInput from '../../components/auth/authFieldInput'
-import { authActions } from '../../redux/auth'
 import PropTypes from 'prop-types'
+import auth from '../../api/auth'
+
+async function login (value) {
+  auth.login(value).then((data) => {
+    console.log(data)
+  })
+}
+
 export default function LoginPage ({ navigation }) {
   const { width } = useWindowDimensions()
-  const dispatch = useDispatch()
   const formik = useFormik({
     initialValues: {
       phonenumber: '',
@@ -16,8 +21,10 @@ export default function LoginPage ({ navigation }) {
     },
     onSubmit: (value) => {
       console.log(value)
-      dispatch(authActions.login())
-      navigation.navigate('home')
+      // dispatch(authActions.login())
+      // navigation.navigate('home')
+
+      login()
     }
   })
   return (
@@ -33,7 +40,7 @@ export default function LoginPage ({ navigation }) {
         placeholder={'Mật khẩu'}
         icon="key-outline"
         style={style.inputField}
-        onChange={(text) => { formik.setFieldValue('phonenumber', text) }}
+        onChange={(text) => { formik.setFieldValue('password', text) }}
         isPasswordField={true} />
       <Button
         style={{ ...style.button, ...{ width: width * 0.9 } }}

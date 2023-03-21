@@ -1,16 +1,23 @@
 import axios from 'axios'
-import queryString from 'query-string'
+// import queryString from 'query-string'
+import { parse, stringify } from 'query-string/base'
 import storage from '../helper/storage'
 
 const api = axios.create({
-  baseURL: 'https://mtm-api-staging.herokuapp.com/',
+  baseURL: 'http://hanamthai.alwaysdata.net/',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'Cache-Control': 'no-cache',
-    'Access-Control-Allow-Origin': '*'
+    'Access-Control-Allow-Origin': '*',
+    'Accept-Encoding': 'gzip, deflate, br'
   },
-  paramsSerializer: params => queryString.stringify(params)
+  timeout: 25000,
+  // paramsSerializer: params => queryString.stringify(params)
+  paramsSerializer: {
+    encode: parse,
+    serialize: stringify
+  }
 })
 
 api.interceptors.request.use(async (config) => {
@@ -21,9 +28,9 @@ api.interceptors.request.use(async (config) => {
 
 api.interceptors.response.use(
   (response) => {
-    return response.data
+    return response
   }, err => {
-    throw err.response.data.error
+    throw err
   }
 )
 
