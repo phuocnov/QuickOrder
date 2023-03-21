@@ -1,25 +1,28 @@
 import { Button, Flex } from '@react-native-material/core'
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
+import React from 'react'
 import { View, Text, useWindowDimensions, TouchableOpacity, StyleSheet } from 'react-native'
 import MyAuthInput from '../../components/auth/authFieldInput'
 import PropTypes from 'prop-types'
+import auth from '../../api/auth'
+// import { stringify } from 'query-string/base'
 
 export default function SignupPage ({ navigation }) {
   const { width } = useWindowDimensions()
-  const [reheckPassword, setRecheckPassword] = useState('')
   const formik = useFormik({
     initialValues: {
       name: '',
       email: '',
       phonenumber: '',
-      password: ''
+      password: '',
+      rePassword: ''
     },
     onSubmit: (value) => {
-      if (reheckPassword === value.password) {
-        console.log(value)
-        navigation.navigate('login')
-      }
+      console.log('submit value: ', value)
+      auth.signup(value).then(result => {
+        console.log(result``)
+      })
+      // navigation.navigate('login')
     }
   })
   return (
@@ -45,17 +48,17 @@ export default function SignupPage ({ navigation }) {
         placeholder={'Mật khẩu'}
         icon="key-outline"
         style={style.inputField}
-        onChange={(text) => { formik.setFieldValue('pasword', text) }}
+        onChange={(text) => { formik.setFieldValue('password', text) }}
         isPasswordField={true} />
       <MyAuthInput
         placeholder={'Nhập lại mật khẩu'}
         icon="key-outline"
         style={style.inputField}
-        onChange={(text) => { setRecheckPassword(text) }}
+        onChange={(text) => { formik.setFieldValue('rePassword', text) }}
         isPasswordField={true} />
       <Button
         style={{ ...style.button, ...{ width: width * 0.9 } }}
-        title="Đăng nhập"
+        title="Đăng ký"
         color='#F6ab31'
         titleStyle={{ color: '#fff' }}
         onPress={() => { formik.submitForm() }} />
