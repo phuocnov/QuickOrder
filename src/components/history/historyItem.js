@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { Ionicons } from '@expo/vector-icons'
 export default function HistoryItem ({ data }) {
   const { width } = useWindowDimensions()
-  return <Box style={{ width, height: 200, backgroundColor: '#fff', marginTop: 15, padding: 10 }}>
+  return <Box style={{ width, backgroundColor: '#fff', marginTop: 15, padding: 10 }}>
     <Flex direction='row' style={{ alignItems: 'center', marginVertical: 10 }}>
       <Text style={data.status === 'Completed' ? style.recivedLabel : style.failedLabel}>{data.status === 'Completed' ? 'Đã nhận' : 'Thất bại'}</Text>
       <Spacer />

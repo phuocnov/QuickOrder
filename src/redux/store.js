@@ -6,7 +6,8 @@ const rootReducer = {
   drink: reducer.drinkItemReducer,
   category: reducer.categoryReducer,
   topping: reducer.toppingReducer,
-  cart: reducer.cartReducer
+  cart: reducer.cartReducer,
+  profile: reducer.profileReducer
 }
 
 const store = configureStore({
