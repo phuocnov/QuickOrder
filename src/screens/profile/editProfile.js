@@ -31,7 +31,6 @@ export default function EditProfile ({ navigation }) {
       <Flex style={{ margin: 10 }}>
         <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16, marginBottom: 10 }}>Số điện thoại</Text>
         <TextInput style={{ borderRadius: 10 }} defaultValue={formik.initialValues.phoneNumner}
-
           onChange={(text) => { formik.setFieldValue('phoneNumber', text) }}
         />
       </Flex>
