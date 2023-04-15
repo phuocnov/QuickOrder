@@ -35,6 +35,7 @@ export default function ProfilePage ({ navigation }) {
           <Ionicons name='arrow-forward-outline' />
         </Flex>
       </TouchableOpacity>
+
       <TouchableOpacity
         style={{ backgroundColor: '#fff', marginTop: 20, padding: 10 }}
         onPress={() => { navigation.navigate('Policy') }}>
@@ -44,6 +45,7 @@ export default function ProfilePage ({ navigation }) {
           <Ionicons name='arrow-forward-outline' />
         </Flex>
       </TouchableOpacity>
+
       <TouchableOpacity style={{ backgroundColor: '#fff', marginTop: 20, padding: 10 }}>
         <Flex direction='row'>
           <Text>Đăng xuất</Text>
