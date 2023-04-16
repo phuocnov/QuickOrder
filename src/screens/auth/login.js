@@ -5,28 +5,28 @@ import { View, Text, useWindowDimensions, TouchableOpacity, StyleSheet } from 'r
 import MyAuthInput from '../../components/auth/authFieldInput'
 import PropTypes from 'prop-types'
 import auth from '../../api/auth'
-
-async function login (value) {
-  auth.login(value).then((data) => {
-    console.log(data)
-  })
-}
+import { authActions } from '../../redux/auth'
+import { useDispatch } from 'react-redux'
 
 export default function LoginPage ({ navigation }) {
   const { width } = useWindowDimensions()
   const formik = useFormik({
     initialValues: {
-      phonenumber: '',
-      password: ''
     },
     onSubmit: (value) => {
       console.log(value)
-      // dispatch(authActions.login())
-      // navigation.navigate('home')
-
-      login()
+      login(value)
     }
   })
+
+  const dispatch = useDispatch()
+  async function login (value) {
+    auth.login(value).then((res) => {
+      console.log(res.data)
+      dispatch(authActions.login(res.data))
+    })
+  }
+
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
       <Text style={style.title}>Xin chào !</Text>
@@ -47,7 +47,9 @@ export default function LoginPage ({ navigation }) {
         title="Đăng nhập"
         color='#F6ab31'
         titleStyle={{ color: '#fff' }}
-        onPress={() => { formik.submitForm() }} />
+        onPress={() => {
+          formik.submitForm()
+        }} />
       <TouchableOpacity>
         <Text style={style.pressableText}>Quên mật khẩu?</Text>
       </TouchableOpacity>

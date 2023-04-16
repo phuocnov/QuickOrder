@@ -3,6 +3,8 @@ import { Box, Button, Flex, Spacer } from '@react-native-material/core'
 import React from 'react'
 import { View, Text, useWindowDimensions, StyleSheet, TouchableOpacity } from 'react-native'
 import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { authActions } from '../../redux/auth'
 
 export default function ProfilePage ({ navigation }) {
   const data = {
@@ -13,7 +15,10 @@ export default function ProfilePage ({ navigation }) {
     rolename: 'admin',
     userid: 2
   }
-
+  const dispatch = useDispatch()
+  function logout () {
+    dispatch(authActions.logout())
+  }
   const { width } = useWindowDimensions()
   return (
     <View style={{ flex: 1 }}>
@@ -46,7 +51,9 @@ export default function ProfilePage ({ navigation }) {
         </Flex>
       </TouchableOpacity>
 
-      <TouchableOpacity style={{ backgroundColor: '#fff', marginTop: 20, padding: 10 }}>
+      <TouchableOpacity
+        style={{ backgroundColor: '#fff', marginTop: 20, padding: 10 }}
+        onPress={() => { logout() }}>
         <Flex direction='row'>
           <Text>Đăng xuất</Text>
           <Spacer />

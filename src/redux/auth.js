@@ -4,18 +4,21 @@ import storage from '../helper/storage'
 const slice = createSlice({
   name: 'auth',
   initialState: {
-    isLogin: true
+    isLogin: false
   },
   reducers: {
     login: (state, actions) => {
       state.isLogin = true
-      storage.set('token', actions.payload)
+      storage.set('token', actions.payload.access_token)
     },
     logout: state => {
       state.isLogin = false
       try {
         storage.clear()
       } catch (error) { }
+    },
+    loadToken: (state) => {
+      state.isLogin = true
     }
   }
 })

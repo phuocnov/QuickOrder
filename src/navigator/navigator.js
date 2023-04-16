@@ -7,17 +7,21 @@ import SignupPage from '../screens/auth/signup'
 import RootHomepage from '../screens/home/rootHomePage'
 import ProductDetail from '../screens/home/productDetail'
 import ShoppingCart from '../screens/home/shoppingCart'
+import storage from '../helper/storage'
 
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { authActions } from '../redux/auth'
 const Stack = createNativeStackNavigator()
 const noHeaderOptions = {
   headerShown: false
 }
 export default function MyNavigator () {
+  const dispatch = useDispatch()
+  storage.get('token').then(value => {
+    if (value !== null) dispatch(authActions.loadToken(value))
+  })
   const isLogin = useSelector(state => state.auth.isLogin)
-  useEffect(() => {
-
-  }, [isLogin])
+  useEffect(() => {}, [isLogin])
   return (
     <NavigationContainer>
       {store.getState().auth.isLogin
