@@ -1,37 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const sampleCategoryDatas = [
-  {
-    id: 0,
-    value: 'coffee',
-    name: 'Coffee'
-  },
-  {
-    id: 1,
-    value: 'milk-tea',
-    name: 'Trà sữa'
-  },
-  {
-    id: 2,
-    value: 'tea',
-    name: 'Trà'
-  },
-  {
-    id: 3,
-    value: 'soft-drink',
-    name: 'Nước ngọt'
-  }
-]
-
 const slice = createSlice({
   name: 'category',
   initialState: {
-    categories: sampleCategoryDatas,
+    categories: [],
     selected: -1
   },
   reducers: {
     select: (state, actions) => {
       state.selected = actions.payload
+    },
+    set: (state, actions) => {
+      state.categories = actions.payload
     }
   }
 })

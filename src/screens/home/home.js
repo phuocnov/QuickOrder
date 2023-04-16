@@ -1,25 +1,32 @@
 import { Ionicons } from '@expo/vector-icons'
 import { Box, Wrap } from '@react-native-material/core'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, Text, useWindowDimensions, Image, ScrollView } from 'react-native'
 import CategoryButton from '../../components/categoryButton'
 import Item from '../../components/item'
 import MySearchBar from '../../components/searchBar'
 import { Flex } from 'react-native-flex-layout'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { categoryActions } from '../../redux/category'
 import store from '../../redux/store'
 import { drinkItemActions } from '../../redux/drinkItem'
 import CartButton from '../../components/cartButton'
 import storage from '../../helper/storage'
 import { cartActions } from '../../redux/cart'
+import product from '../../api/product'
 
 export default function HomePage ({ navigation }) {
   const { width, height } = useWindowDimensions()
   const dispatch = useDispatch()
-  const cateSelected = useSelector(state => state.category.selected)
-  const drinksList = useSelector(state => state.drink.drinks)
+  const [cateSelected, setCateSelected] = useState(-1)
+  const [drinkList, setDrinkList] = useState([])
+  const [categories, setCategories] = useState([])
+  store.subscribe(() => {
+    setDrinkList(store.getState().drink.drinks)
+    setCateSelected(store.getState().category.selected)
+    setCategories(store.getState().category.categories)
+  })
   const style = StyleSheet.create({
     screen: {
       flex: 1,
@@ -36,14 +43,34 @@ export default function HomePage ({ navigation }) {
       fontFamily: 'Roboto_400Regular'
     }
   })
+
   function gotoDetail (id) {
     navigation.navigate('product-detail', { drinkId: id })
   }
   function gotoCart () {
     navigation.navigate('shopping-cart')
   }
+
+  async function fetchDrink () {
+    product.getProducts().then((res) => {
+      const data = res.data.data
+      dispatch(drinkItemActions.setDrink(data))
+    })
+  }
+
+  async function fetchCategories () {
+    product.getCategories().then((res) => {
+      const data = res.data.categories
+      dispatch(categoryActions.set(data))
+    })
+  }
   useEffect(() => {
-  }, [cateSelected, drinksList])
+    fetchDrink()
+    fetchCategories()
+  }, [])
+
+  useEffect(() => {
+  }, [cateSelected, drinkList])
 
   // Load cart from storage on startup
   storage.get('cart').then(value => {
@@ -75,30 +102,37 @@ export default function HomePage ({ navigation }) {
           </Box>
 
           <Flex wrap={true} style={{ backgroundColor: '#eee', width, height: 100, marginTop: 20 }}>
-            {store.getState().category.categories.map((cate, index) => {
+            {categories.map((cate, index) => {
               return <CategoryButton
                 key={index}
-                selected={cate.id === store.getState().category.selected}
-                title={cate.name}
+                selected={cate.categoryid === store.getState().category.selected}
+                title={cate.categoryname}
                 onPress={() => {
                   if (store.getState().category.selected !== -1) {
                     dispatch(categoryActions.select(-1))
                     dispatch(drinkItemActions.filterByTag(-1))
                   } else {
-                    dispatch(categoryActions.select(cate.id))
-                    dispatch(drinkItemActions.filterByTag(cate.id))
+                    dispatch(categoryActions.select(cate.categoryid))
+                    dispatch(drinkItemActions.filterByTag(cate.categoryid))
                   }
                 }} />
             })}
           </Flex>
         </Box>
-        <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row' }}>
-          {store.getState().drink.drinks.map((drink, index) => {
-            return <Item handleClick={() => gotoDetail(drink.drinkID)} key={`drink ${index}`} title={drink.drinkName} price={drink.size[0].price} />
-          })}
-        </View>
+        {drinkList.length > 0
+          ? <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row' }}>
+            {drinkList.map((drink, index) => {
+              return <Item
+                handleClick={() => gotoDetail(drink.drinkID)}
+                key={`drink ${index}`}
+                title={drink.drinkname}
+                price={parseInt(drink.price)}
+                imgsrc={drink.drinkimage}/>
+            })}
+          </View>
+          : <></>}
       </ScrollView>
-      <CartButton handleClick={() => gotoCart()}/>
+      <CartButton handleClick={() => gotoCart()} />
     </View >
   )
 }

@@ -11,19 +11,26 @@ import store from '../../redux/store'
 import ItemCountButton from '../../components/productDetail/itemCountButton'
 import { useDispatch } from 'react-redux'
 import { cartActions } from '../../redux/cart'
+import product from '../../api/product'
 
 export default function ProductDetail ({ route, navigation }) {
   const { width } = useWindowDimensions()
   const { drinkId } = route.params
   const [price, setPrice] = useState(0)
+  const [productData, setProductData] = useState({})
   const dispatch = useDispatch()
 
-  const drinkData = store.getState().drink.drinks.find(drink => drink.drinkID === drinkId)
+  async function fetchProductDetail () {
+    product.getProduct(drinkId).then(res => {
+      setProductData(res.data)
+    })
+  }
+
   getSupportedCurrencies()
   const formik = useFormik({
     initialValues: {
-      drinkData,
-      size: 'S',
+      productData,
+      size: 6,
       toppings: [],
       note: '',
       number: 1,
@@ -37,7 +44,7 @@ export default function ProductDetail ({ route, navigation }) {
   })
 
   function caculateItemPrice () {
-    const basePrice = drinkData.size.find(size => size.value === formik.values.size).price
+    const basePrice = productData.size.find(size => size.sizeid === formik.values.size).price
     const selectedTopping = []
     let toppingPrice = 0
     formik.values.toppings.map((topping) => selectedTopping.push(store.getState().topping.toppings.find(tp => tp.value === topping)))
@@ -60,36 +67,38 @@ export default function ProductDetail ({ route, navigation }) {
   }
 
   useEffect(() => {
-    caculateItemPrice()
-  }, [formik])
+    fetchProductDetail()
+    // caculateItemPrice()
+  }, [])
   return <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#f5f5f5' }}>
-    <FormikProvider value={formik}>
+    {productData !== undefined
+      ? <FormikProvider value={formik}>
       <ScrollView style={{ flex: 1 }}>
         <Box style={style.headerContainer}>
           <Image source={require('../../../assets/image/coffee.jpg')} style={{ width, height: 200 }} />
           <Box style={{ padding: 20 }}>
-            <Text style={style.name}>{drinkData.drinkName}</Text>
+            <Text style={style.name}>{productData.drinkname}</Text>
             <Text style={style.price}>{formatCurrency({ amount: price, code: 'VND' })[0]}</Text>
-            <Text style={style.description}>{drinkData.description}</Text>
+            <Text style={style.description}>{productData.description}</Text>
           </Box>
         </Box>
         <Box style={{ width, backgroundColor: '#fff', marginTop: 10, padding: 10 }}>
           <Box>
             <Text style={style.sectionTitle}>Size</Text>
-            <RadioButtonGroup selected={formik.values.size}
+            {/* <RadioButtonGroup selected={formik.values.size}
               onSelected={(value) => { formik.setFieldValue('size', value) }}
               radioBackground={'#F6AC31'}>
-              {drinkData.size.map((size, index) => {
+              {productData.size.map((size, index) => {
                 return <RadioButtonItem value={size.value}
                   key={index}
                   style={{ marginTop: 10, alignItems: 'center' }}
                   label={<Flex direction='row' style={{ width: width * 0.9, alignItems: 'center' }}>
-                    <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>{size.label}</Text>
+                    <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>{size.namesize}</Text>
                     <Spacer />
-                    <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>{formatCurrency({ amount: size.price, code: 'VND' })[0]}</Text>
+                    <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>{formatCurrency({ amount: parseInt(size.price), code: 'VND' })[0]}</Text>
                   </Flex>} />
               })}
-            </RadioButtonGroup>
+            </RadioButtonGroup> */}
           </Box>
         </Box>
         <Box style={{ width, backgroundColor: '#fff', marginTop: 10, padding: 10 }}>
@@ -170,6 +179,7 @@ export default function ProductDetail ({ route, navigation }) {
       </Box>
       <BackButton clickHandler={() => { navigation.goBack() }} />
     </FormikProvider>
+      : <></>}
   </View>
 }
 const style = StyleSheet.create({
