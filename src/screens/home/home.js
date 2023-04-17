@@ -123,7 +123,7 @@ export default function HomePage ({ navigation }) {
           ? <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row' }}>
             {drinkList.map((drink, index) => {
               return <Item
-                handleClick={() => gotoDetail(drink.drinkID)}
+                handleClick={() => gotoDetail(drink.drinkid)}
                 key={`drink ${index}`}
                 title={drink.drinkname}
                 price={parseInt(drink.price)}

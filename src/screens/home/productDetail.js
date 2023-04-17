@@ -17,20 +17,52 @@ export default function ProductDetail ({ route, navigation }) {
   const { width } = useWindowDimensions()
   const { drinkId } = route.params
   const [price, setPrice] = useState(0)
-  const [productData, setProductData] = useState({})
+  const [productData, setProductData] = useState({
+    drink: {
+      categoryid: 3,
+      description: '30 gram trà + 20 gram sữa.',
+      drinkid: 3,
+      drinkimage: 'https://channel.mediacdn.vn/thumb_w/640/428462621602512896/2022/10/27/photo-1-1666869235187680523516.jpg',
+      drinkname: 'Trà Sữa Thập Cẩm',
+      status: 'Available'
+    },
+    size: [
+      {
+        namesize: 'Vừa',
+        price: '30000',
+        sizeid: 6
+      },
+      {
+        namesize: 'Lớn',
+        price: '40000',
+        sizeid: 7
+      }
+    ],
+    topping: [
+      {
+        nametopping: 'TRÂN CHÂU TRẮNG',
+        price: '5000',
+        toppingid: 1
+      },
+      {
+        nametopping: 'KEM CHESSE',
+        price: '5000',
+        toppingid: 2
+      },
+      {
+        nametopping: 'THẠCH CỦ NĂNG',
+        price: '5000',
+        toppingid: 3
+      }
+    ]
+  })
   const dispatch = useDispatch()
-
-  async function fetchProductDetail () {
-    product.getProduct(drinkId).then(res => {
-      setProductData(res.data)
-    })
-  }
 
   getSupportedCurrencies()
   const formik = useFormik({
     initialValues: {
       productData,
-      size: 6,
+      size: -1,
       toppings: [],
       note: '',
       number: 1,
@@ -44,7 +76,9 @@ export default function ProductDetail ({ route, navigation }) {
   })
 
   function caculateItemPrice () {
-    const basePrice = productData.size.find(size => size.sizeid === formik.values.size).price
+    const basePrice = formik.values.size !== -1
+      ? productData.size.find(size => size.sizeid === formik.values.size).price
+      : 0
     const selectedTopping = []
     let toppingPrice = 0
     formik.values.toppings.map((topping) => selectedTopping.push(store.getState().topping.toppings.find(tp => tp.value === topping)))
@@ -66,119 +100,128 @@ export default function ProductDetail ({ route, navigation }) {
     }
   }
 
+  async function fetchProductDetail () {
+    product.getProduct(drinkId).then(res => {
+      const data = res.data.data
+      setProductData(data)
+    })
+  }
+
   useEffect(() => {
     fetchProductDetail()
-    // caculateItemPrice()
   }, [])
+  useEffect(() => {
+    caculateItemPrice()
+  }, [formik])
   return <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#f5f5f5' }}>
     {productData !== undefined
       ? <FormikProvider value={formik}>
-      <ScrollView style={{ flex: 1 }}>
-        <Box style={style.headerContainer}>
-          <Image source={require('../../../assets/image/coffee.jpg')} style={{ width, height: 200 }} />
-          <Box style={{ padding: 20 }}>
-            <Text style={style.name}>{productData.drinkname}</Text>
-            <Text style={style.price}>{formatCurrency({ amount: price, code: 'VND' })[0]}</Text>
-            <Text style={style.description}>{productData.description}</Text>
+        <ScrollView style={{ flex: 1 }}>
+          <Box style={style.headerContainer}>
+            <Image source={{ uri: productData.drink.drinkimage }} style={{ width, height: 200 }} />
+            <Box style={{ padding: 20 }}>
+              <Text style={style.name}>{productData.drink.drinkname}</Text>
+              <Text style={style.price}>{formatCurrency({ amount: price, code: 'VND' })[0]}</Text>
+              <Text style={style.description}>{productData.drink.description}</Text>
+            </Box>
           </Box>
-        </Box>
-        <Box style={{ width, backgroundColor: '#fff', marginTop: 10, padding: 10 }}>
-          <Box>
-            <Text style={style.sectionTitle}>Size</Text>
-            {/* <RadioButtonGroup selected={formik.values.size}
-              onSelected={(value) => { formik.setFieldValue('size', value) }}
-              radioBackground={'#F6AC31'}>
-              {productData.size.map((size, index) => {
-                return <RadioButtonItem value={size.value}
-                  key={index}
-                  style={{ marginTop: 10, alignItems: 'center' }}
-                  label={<Flex direction='row' style={{ width: width * 0.9, alignItems: 'center' }}>
-                    <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>{size.namesize}</Text>
+          <Box style={{ width, backgroundColor: '#fff', marginTop: 10, padding: 10 }}>
+            <Box>
+              <Text style={style.sectionTitle}>Size</Text>
+              <RadioButtonGroup selected={formik.values.size}
+                onSelected={(value) => { formik.setFieldValue('size', value) }}
+                radioBackground={'#F6AC31'}>
+                {productData.size.map((size, index) => {
+                  return <RadioButtonItem value={size.sizeid}
+                    key={index}
+                    style={{ marginTop: 10, alignItems: 'center' }}
+                    label={<Flex direction='row' style={{ width: width * 0.9, alignItems: 'center' }}>
+                      <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>{size.namesize}</Text>
+                      <Spacer />
+                      <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>{formatCurrency({ amount: parseInt(size.price), code: 'VND' })[0]}</Text>
+                    </Flex>} />
+                })}
+              </RadioButtonGroup>
+            </Box>
+          </Box>
+          <Box style={{ width, backgroundColor: '#fff', marginTop: 10, padding: 10 }}>
+            <Text style={style.sectionTitle}>Topping</Text>
+            <FieldArray
+              name='toppings'
+              render={arrayHelper => {
+                return store.getState().topping.toppings.map((topping, index) => {
+                  return <Flex key={index} direction="row" style={{ marginTop: 10 }}>
+                    <CheckBox
+                      color={'#F6AC31'}
+                      value={formik.values.toppings.indexOf(topping.value) !== -1}
+                      onValueChange={() => {
+                        formik.values.toppings.indexOf(topping.value) === -1
+                          ? arrayHelper.push(topping.value)
+                          : arrayHelper.remove(formik.values.toppings.indexOf(topping.value))
+                      }} />
+                    <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16, marginLeft: 5 }}>{topping.name}</Text>
                     <Spacer />
-                    <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>{formatCurrency({ amount: parseInt(size.price), code: 'VND' })[0]}</Text>
-                  </Flex>} />
-              })}
-            </RadioButtonGroup> */}
+                    <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>{formatCurrency({ amount: topping.price, code: 'VND' })[0]}</Text>
+                  </Flex>
+                })
+              }}
+            />
           </Box>
-        </Box>
-        <Box style={{ width, backgroundColor: '#fff', marginTop: 10, padding: 10 }}>
-          <Text style={style.sectionTitle}>Topping</Text>
-          <FieldArray
-            name='toppings'
-            render={arrayHelper => {
-              return store.getState().topping.toppings.map((topping, index) => {
-                return <Flex key={index} direction="row" style={{ marginTop: 10 }}>
-                  <CheckBox
-                    color={'#F6AC31'}
-                    value={formik.values.toppings.indexOf(topping.value) !== -1}
-                    onValueChange={() => {
-                      formik.values.toppings.indexOf(topping.value) === -1
-                        ? arrayHelper.push(topping.value)
-                        : arrayHelper.remove(formik.values.toppings.indexOf(topping.value))
-                    }} />
-                  <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16, marginLeft: 5 }}>{topping.name}</Text>
-                  <Spacer />
-                  <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>{formatCurrency({ amount: topping.price, code: 'VND' })[0]}</Text>
-                </Flex>
-              })
-            }}
-          />
-        </Box>
-        <Box style={{ width, backgroundColor: '#fff', marginTop: 10, padding: 10 }}>
-          <Text style={style.sectionTitle}>Ghi chú</Text>
-          <TextInput style={{ width: width * 0.9, height: 100 }}
-            placeholder="ghi chú của bạn"
-            cursorColor={'#F6AC31'}
-            selectionColor={'#F6AC31'}
+          <Box style={{ width, backgroundColor: '#fff', marginTop: 10, padding: 10 }}>
+            <Text style={style.sectionTitle}>Ghi chú</Text>
+            <TextInput style={{ width: width * 0.9, height: 100 }}
+              placeholder="ghi chú của bạn"
+              cursorColor={'#F6AC31'}
+              selectionColor={'#F6AC31'}
+              color={'#F6AC31'}
+              onChangeText={(text) => formik.setFieldValue('note', text)} />
+          </Box>
+          <Box style={{ height: 130 }} />
+        </ScrollView>
+        {/* Footer */}
+        <Box
+          style={{ ...style.footerContainer, ...{ width } }}>
+          <Flex
+            direction='row'
+            style={{
+              width: 120,
+              height: 70,
+              backgroundColor: '#fff',
+              justifyContent: 'center',
+              marginTop: 10
+            }}>
+            <ItemCountButton title={'-'} onPress={() => { decreaseNumber() }}
+              disabled={formik.values.number === 1} />
+            <Spacer />
+            <Text style={style.footerCountText}>{formik.values.number}</Text>
+            <Spacer />
+            <ItemCountButton title={'+'} onPress={() => increaseNumber()} />
+          </Flex>
+          <Button title={<Flex direction='row'>
+            <Text style={{
+              fontFamily: 'Roboto_500Medium',
+              color: '#fff',
+              fontSize: 14
+            }}>Thêm vào giỏ hàng</Text>
+            <Spacer />
+            <Text style={{
+              fontFamily: 'Roboto_500Medium',
+              color: '#fff',
+              fontSize: 14
+            }}>{formatCurrency({ amount: price, code: 'VND' })[0]}</Text>
+          </Flex>}
+            style={{ width: width * 0.8, bottom: 20, height: 40, justifyContent: 'center' }}
             color={'#F6AC31'}
-            onChangeText={(text) => formik.setFieldValue('note', text)} />
+            titleStyle={{ color: '#fff' }}
+            onPress={() => {
+              formik.setFieldValue('price', price).then(() => {
+                formik.submitForm()
+                navigation.goBack()
+              })
+            }} />
         </Box>
-        <Box style={{ height: 130 }} />
-      </ScrollView>
-      {/* Footer */}
-      <Box
-        style={{ ...style.footerContainer, ...{ width } }}>
-        <Flex
-          direction='row'
-          style={{
-            width: 120,
-            height: 70,
-            backgroundColor: '#fff',
-            justifyContent: 'center',
-            marginTop: 10
-          }}>
-          <ItemCountButton title={'-'} onPress={() => { decreaseNumber() }}
-            disabled={formik.values.number === 1} />
-          <Spacer />
-          <Text style={style.footerCountText}>{formik.values.number}</Text>
-          <Spacer />
-          <ItemCountButton title={'+'} onPress={() => increaseNumber()} />
-        </Flex>
-        <Button title={<Flex direction='row'>
-          <Text style={{
-            fontFamily: 'Roboto_500Medium',
-            color: '#fff',
-            fontSize: 14
-          }}>Thêm vào giỏ hàng</Text>
-          <Spacer />
-          <Text style={{
-            fontFamily: 'Roboto_500Medium',
-            color: '#fff',
-            fontSize: 14
-          }}>{formatCurrency({ amount: price, code: 'VND' })[0]}</Text>
-        </Flex>}
-          style={{ width: width * 0.8, bottom: 20, height: 40, justifyContent: 'center' }}
-          color={'#F6AC31'}
-          titleStyle={{ color: '#fff' }}
-          onPress={() => {
-            formik.setFieldValue('price', price).then(() => {
-              formik.submitForm()
-              navigation.goBack()
-            })
-          }} />
-      </Box>
-      <BackButton clickHandler={() => { navigation.goBack() }} />
-    </FormikProvider>
+        <BackButton clickHandler={() => { navigation.goBack() }} />
+      </FormikProvider>
       : <></>}
   </View>
 }

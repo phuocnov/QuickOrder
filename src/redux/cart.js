@@ -10,7 +10,7 @@ const slice = createSlice({
     addItem: (state, actions) => {
       state.items.push(actions.payload)
     },
-    removeItemL: (state, actions) => {
+    removeItem: (state, actions) => {
       const index = state.items.findIndex(actions.payload)
       state.items.splice(index)
     },
