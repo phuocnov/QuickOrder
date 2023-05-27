@@ -1,33 +1,33 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, ScrollView, useWindowDimensions } from 'react-native'
 import OrderItem from '../../components/order/orderItem'
+import order from '../../api/order'
 
 export default function OrderPage () {
   const { width, height } = useWindowDimensions()
 
-  const orders = [
-    {
-      status: 'Prepare',
-      address: '123/89 Võ Văn Ngân, TP Thủ Đức',
-      orderdate: 'Mon, 20 Feb 2023 17:44:01 GMT',
-      totalprice: '200000',
-      orderdetail: 'Trà sữa thập cẩm(x2), Size L, Cafe sữa(X1), Size S, Topping: Trân Châu Trắng, Thạch dừa'
-    },
-    {
-      status: 'Delivering',
-      address: '97 Man Thiện, phường Hiệp Phú, thành phố Thủ Đức, thành phố Hồ Chí Minh',
-      orderdate: 'Wed, 15 Mar 2023 10:02:40 GMT',
-      totalprice: '200000',
-      orderdetail: 'Trà sữa thập cẩm(x2), Size L, Cafe sữa(X1), Size S, Topping: Trân Châu Trắng, Thạch dừa'
-    }
-  ]
+  const [orders, setOrders] = useState([])
 
+  async function fetchOrder () {
+    const data = await order.current()
+    setOrders(data.data.data)
+    console.log(orders)
+  }
+  useEffect(() => {
+    fetchOrder()
+  }, [])
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width, height, backgroundColor: '#ccc' }}>
       <ScrollView>
-        {orders.map((order, index) => {
-          return <OrderItem data={order} key={index}/>
-        })}
+        {
+          orders.map((ord, index) => {
+            return <OrderItem
+            data={ord}
+            key={index}
+            cancleOrder={() => { order.cancle(ord.orderid) }}
+            recivedOrder={() => { order.recived(ord.orderid) }}/>
+          })
+        }
       </ScrollView>
     </View>
   )

@@ -14,7 +14,13 @@ const API_CONSTAINTS = {
     INFO: '/userInfo',
     CHANGE: '/userInfo'
   },
-  ORDER: '/order'
+  ORDER: {
+    ORDER: '/order/preparing',
+    COMPLETE: (id) => `/order/complete/${id}`,
+    CANCEL: (id) => `/order/cancel/${id}`,
+    HISTORY: '/order/history',
+    CURRENT: '/order/current'
+  }
 
 }
 export default API_CONSTAINTS

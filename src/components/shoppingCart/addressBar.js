@@ -21,7 +21,7 @@ export default function AddressBar ({ onChange }) {
         variant='standard'
         placeholder="Nhập địa chỉ giao hàng"
         style={{ height: 20, paddingLeft: 25 }}
-        onChangeText={onChange()}/>
+        onChangeText={(value) => { onChange(value) }}/>
       <Ionicons name='location-outline' style={{ position: 'absolute', fontSize: 20, color: '#888', left: 10 }} />
     </Box>
   )

@@ -11,6 +11,7 @@ import storage from '../helper/storage'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { authActions } from '../redux/auth'
+import ForgotPassword from '../screens/auth/forgotpassword'
 const Stack = createNativeStackNavigator()
 const noHeaderOptions = {
   headerShown: false
@@ -33,6 +34,7 @@ export default function MyNavigator () {
         : <Stack.Navigator>
           <Stack.Screen name="login" component={LoginPage} options={noHeaderOptions} />
           <Stack.Screen name="sign-up" component={SignupPage} options={noHeaderOptions} />
+          <Stack.Screen name="forgot-password" component={ForgotPassword} options={noHeaderOptions} />
         </Stack.Navigator>
       }
     </NavigationContainer>

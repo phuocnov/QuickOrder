@@ -11,7 +11,7 @@ export default function SignupPage ({ navigation }) {
   const { width } = useWindowDimensions()
   const formik = useFormik({
     initialValues: {
-      name: '',
+      fullname: '',
       email: '',
       phonenumber: '',
       password: '',
@@ -20,9 +20,9 @@ export default function SignupPage ({ navigation }) {
     onSubmit: (value) => {
       console.log('submit value: ', value)
       auth.signup(value).then(result => {
-        console.log(result``)
+        console.log(result)
       })
-      // navigation.navigate('login')
+      navigation.navigate('login')
     }
   })
   return (
@@ -33,7 +33,7 @@ export default function SignupPage ({ navigation }) {
         placeholder={'Họ và tên'}
         icon="person-outline"
         style={style.inputField}
-        onChange={(text) => { formik.setFieldValue('name', text) }} />
+        onChange={(text) => { formik.setFieldValue('fullname', text) }} />
       <MyAuthInput
         placeholder={'Số điện thoại'}
         icon="call-outline"
@@ -44,6 +44,12 @@ export default function SignupPage ({ navigation }) {
         icon="mail-outline"
         style={style.inputField}
         onChange={(text) => { formik.setFieldValue('email', text) }} />
+        <MyAuthInput
+        placeholder={'Địa chỉ'}
+        icon="location-outline"
+        style={style.inputField}
+        onChange={(text) => { formik.setFieldValue('address', text) }}
+        isPasswordField={false} />
       <MyAuthInput
         placeholder={'Mật khẩu'}
         icon="key-outline"

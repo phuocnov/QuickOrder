@@ -11,8 +11,8 @@ const slice = createSlice({
       state.items.push(actions.payload)
     },
     removeItem: (state, actions) => {
-      const index = state.items.findIndex(actions.payload)
-      state.items.splice(index)
+      console.log(actions.payload)
+      state.items.splice(actions.payload)
     },
     clear: (state) => {
       state.items = []

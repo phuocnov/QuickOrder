@@ -1,30 +1,46 @@
 import { Ionicons } from '@expo/vector-icons'
 import { Box, Button, Flex, Spacer } from '@react-native-material/core'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, useWindowDimensions, StyleSheet, TouchableOpacity } from 'react-native'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { authActions } from '../../redux/auth'
+import user from '../../api/user'
+import store from '../../redux/store'
+import { profileActions } from '../../redux/profile'
 
 export default function ProfilePage ({ navigation }) {
-  const data = {
+  const [userInfo, setUserInfo] = useState({
     address: '91, Lê Văn Việt, phường Hiệp Phú, thành phố Thủ Đức',
     email: 'hanamthai02@gmail.com',
     fullname: 'Nguyễn Văn Anh',
     phonenumber: '0383295427',
     rolename: 'admin',
     userid: 2
-  }
+  })
   const dispatch = useDispatch()
   function logout () {
     dispatch(authActions.logout())
   }
+
+  store.subscribe(() => [
+    setUserInfo(store.getState().profile.profile)
+  ])
+
+  async function fetchUserProfile () {
+    const data = await user.getUserInfo()
+    store.dispatch(profileActions.setProfile(data.data.data))
+  }
+  useEffect(() => {
+    fetchUserProfile()
+  }, [])
+
   const { width } = useWindowDimensions()
   return (
     <View style={{ flex: 1 }}>
       <Box style={{ width, height: 200, backgroundColor: '#fff' }}>
-        <Text style={style.fullname}>{data.fullname}</Text>
-        <Text style={style.email}>{data.email}</Text>
+        <Text style={style.fullname}>{userInfo.fullname}</Text>
+        <Text style={style.email}>{userInfo.email}</Text>
         <Button color='#F6AC31'
           titleStyle={style.button}
           style={{ width: 220, marginTop: 30, marginLeft: 20 }} title='Chỉnh sửa thông tin'

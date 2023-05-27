@@ -3,11 +3,11 @@ import React from 'react'
 import { StyleSheet, useWindowDimensions } from 'react-native'
 import PropTypes from 'prop-types'
 import { Ionicons } from '@expo/vector-icons'
-export default function OrderItem ({ data }) {
+export default function OrderItem ({ data, cancleOrder, recivedOrder }) {
   const { width } = useWindowDimensions()
   return <Box style={{ width, backgroundColor: '#fff', marginTop: 15, padding: 10 }}>
     <Flex direction='row' style={{ alignItems: 'center', marginVertical: 10 }}>
-      <Text style={data.status === 'Completed' ? style.recivedLabel : style.failedLabel}>{data.status === 'Prepare' ? 'Đã nhận' : 'Thất bại'}</Text>
+      <Text style={data.status === 'Completed' ? style.recivedLabel : style.failedLabel}>{data.status === 'Preparing' ? 'Đang chuẩn bị' : 'Đang giao hàng'}</Text>
       <Spacer />
       <Text style={style.date}>{data.orderdate}</Text>
     </Flex>
@@ -27,7 +27,16 @@ export default function OrderItem ({ data }) {
 
     <Flex direction='row'>
       <Spacer/>
-      <Button style={{ color: '#fff', backgroundColor: '#F6AC31', width: 175, marginTop: 10 }} title={data.status === 'Prepare' ? 'Huỷ đơn hàng' : 'Đã nhận hàng'} />
+      <Button
+      style={{ color: '#fff', backgroundColor: '#F6AC31', width: 175, marginTop: 10 }}
+      title={data.status === 'Preparing' ? 'Huỷ đơn hàng' : 'Đã nhận hàng'}
+      onPress={() => {
+        if (data.status === 'Preparing') {
+          cancleOrder()
+        } else {
+          recivedOrder()
+        }
+      }}/>
     </Flex>
   </Box>
 }
@@ -59,5 +68,7 @@ const style = StyleSheet.create({
 })
 
 OrderItem.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.object,
+  cancleOrder: PropTypes.func,
+  recivedOrder: PropTypes.func
 }

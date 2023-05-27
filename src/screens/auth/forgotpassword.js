@@ -1,56 +1,60 @@
 import { Button, Flex } from '@react-native-material/core'
 import { useFormik } from 'formik'
 import React from 'react'
-import { View, Text, useWindowDimensions, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, useWindowDimensions, TouchableOpacity, StyleSheet, ToastAndroid } from 'react-native'
 import MyAuthInput from '../../components/auth/authFieldInput'
 import PropTypes from 'prop-types'
-import auth from '../../api/auth'
+// import auth from '../../api/auth'
 import { authActions } from '../../redux/auth'
 import { useDispatch } from 'react-redux'
 
-export default function LoginPage ({ navigation }) {
+export default function ForgotPassword ({ navigation }) {
   const { width } = useWindowDimensions()
   const formik = useFormik({
     initialValues: {
     },
     onSubmit: (value) => {
       console.log(value)
+      ToastAndroid.show('Đổi mật khẩu thành công!', ToastAndroid.SHORT)
+      // navigation.navigate
       login(value)
     }
   })
 
   const dispatch = useDispatch()
   async function login (value) {
-    auth.login(value).then((res) => {
-      console.log(res.data)
-      dispatch(authActions.login(res.data))
-    })
+    dispatch(authActions.login(value))
   }
 
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={style.title}>Xin chào !</Text>
-      <Text style={style.subtitle}>Đăng nhập để tiếp tục</Text>
+      <Text style={style.title}>Đổi mật khẩu</Text>
       <MyAuthInput
-        placeholder={'Số điện thoại đăng ký'}
+        placeholder={'Nhập mật khẩu cũ'}
         icon="mail-outline"
         style={style.inputField}
-        onChange={(text) => { formik.setFieldValue('phonenumber', text) }} />
+        onChange={(text) => { formik.setFieldValue('password', text) }} />
       <MyAuthInput
-        placeholder={'Mật khẩu'}
+        placeholder={'Nhập Mật khẩu mới'}
         icon="key-outline"
         style={style.inputField}
-        onChange={(text) => { formik.setFieldValue('password', text) }}
+        onChange={(text) => { formik.setFieldValue('newPassword', text) }}
+        isPasswordField={true} />
+        <MyAuthInput
+        placeholder={'Nhập Lai Mật khẩu mới'}
+        icon="key-outline"
+        style={style.inputField}
+        onChange={(text) => { formik.setFieldValue('newPassword', text) }}
         isPasswordField={true} />
       <Button
         style={{ ...style.button, ...{ width: width * 0.9 } }}
-        title="Đăng nhập"
+        title="Đôi mật khẩu"
         color='#F6ab31'
         titleStyle={{ color: '#fff' }}
         onPress={() => {
           formik.submitForm()
         }} />
-      <TouchableOpacity onPress={() => { navigation.navigate('forgot-password') }}>
+      <TouchableOpacity>
         <Text style={style.pressableText}>Quên mật khẩu?</Text>
       </TouchableOpacity>
       <Flex direction='row'>
@@ -90,6 +94,6 @@ const style = StyleSheet.create({
   }
 })
 
-LoginPage.propTypes = {
+ForgotPassword.propTypes = {
   navigation: PropTypes.any
 }
