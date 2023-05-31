@@ -18,16 +18,25 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.phuocnov.QuickOrder"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "pacckage": "com.huupuoc.quickorder",
+      "versionCode": 1,
+      "package": "com.phuocnov.QuickOrder"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6a59617b-cf3e-4976-9998-81828665ad6c"
+      }
     }
   }
 }

@@ -41,7 +41,10 @@ export default function ShoppingCart ({ navigation }) {
     onSubmit: (values) => {
       console.log(values)
       order.order(values).then(res => {
-        console.log(res)
+        console.log(res.data)
+        cartActions.clear()
+        cartActions.saveToStorage()
+        setCartItem([])
       })
     }
   })
@@ -53,14 +56,14 @@ export default function ShoppingCart ({ navigation }) {
       cartItems.forEach(cartItem => {
         const toppings = []
         cartItem.productData.topping.map(topping => {
-          return toppings.push(topping.colorid)
+          return toppings.push(topping.toppingid)
         })
         const item = {
           drinkid: cartItem.productData.drink.drinkid,
           price: cartItem.price,
           itemquantity: cartItem.number,
-          sizeid: cartItem.size.sizeid,
-          colorid: toppings
+          sizeid: cartItem.sizeid,
+          toppingid: toppings
         }
         items.push(item)
       })
@@ -104,9 +107,9 @@ export default function ShoppingCart ({ navigation }) {
                 <Spacer />
                 <Box style={{ width: 300, marginLeft: 20 }}>
                   <Text style={style.drinkText}>{item.productData.drink.drinkname}</Text>
-                  <Text style={style.detailText}>{`Size: ${item.size.namesize}`}</Text>
+                  {/* <Text style={style.detailText}>{`Size: ${item.productData.size.find(sz => sz.sizeid === item.size).namesize}`}</Text> */}
                   <Text style={style.detailText}>{`Số lượng: ${item.number}`}</Text>
-                  {/* <Text style={style.detailText}>{`Topping: ${item.topping.map(topping => { return ` ${topping} ` })}`}</Text> */}
+                  <Text style={style.detailText}>{`Topping: ${item.toppingid.map(topping => { return ` ${topping} ` })}`}</Text>
                   <Text style={style.drinkPrice}>{formatCurrency({ amount: item.price, code: 'VND' })[0]}</Text>
                   <Text>{item.note}</Text>
                   <TouchableOpacity onPress={() => {
@@ -128,7 +131,10 @@ export default function ShoppingCart ({ navigation }) {
       <Box style={{ height: 300 }} />
     </ScrollView>
     <BackButton clickHandler={() => { navigation.goBack() }} />
-    <OrderFooter orderHandler={() => { formik.submitForm() }} />
+    <OrderFooter orderHandler={() => {
+      formik.submitForm()
+      navigation.navigate('home')
+    }} />
   </View>
 }
 

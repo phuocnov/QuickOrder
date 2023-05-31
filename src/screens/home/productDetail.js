@@ -61,9 +61,8 @@ export default function ProductDetail ({ route, navigation }) {
   getSupportedCurrencies()
   const formik = useFormik({
     initialValues: {
-      productData,
-      size: -1,
-      toppings: [],
+      sizeid: -1,
+      toppingid: [],
       note: '',
       number: 1,
       price: 0
@@ -72,16 +71,17 @@ export default function ProductDetail ({ route, navigation }) {
       dispatch(cartActions.addItem(values))
       dispatch(cartActions.calculatePrice())
       dispatch(cartActions.saveToStorage())
+      console.log(values)
     }
   })
 
   function caculateItemPrice () {
-    const basePrice = formik.values.size !== -1
-      ? productData.size.find(size => size.sizeid === formik.values.size).price
+    const basePrice = formik.values.sizeid !== -1
+      ? productData.size.find(size => size.sizeid === formik.values.sizeid).price
       : 0
     const selectedTopping = []
     let toppingPrice = 0
-    formik.values.toppings.map((topping) => selectedTopping.push(store.getState().topping.toppings.find(tp => tp.value === topping)))
+    formik.values.toppingid.map((topping) => selectedTopping.push(store.getState().topping.toppings.find(tp => tp.value === topping)))
     selectedTopping.map(topping => {
       toppingPrice += topping.price
       return toppingPrice
@@ -104,6 +104,8 @@ export default function ProductDetail ({ route, navigation }) {
     product.getProduct(drinkId).then(res => {
       const data = res.data.data
       setProductData(data)
+      formik.setFieldValue('productData', data)
+      console.log(data)
     })
   }
 
@@ -128,8 +130,8 @@ export default function ProductDetail ({ route, navigation }) {
           <Box style={{ width, backgroundColor: '#fff', marginTop: 10, padding: 10 }}>
             <Box>
               <Text style={style.sectionTitle}>Size</Text>
-              <RadioButtonGroup selected={formik.values.size}
-                onSelected={(value) => { formik.setFieldValue('size', value) }}
+              <RadioButtonGroup selected={formik.values.sizeid}
+                onSelected={(value) => { formik.setFieldValue('sizeid', value) }}
                 radioBackground={'#F6AC31'}>
                 {productData.size.map((size, index) => {
                   return <RadioButtonItem value={size.sizeid}
@@ -149,17 +151,17 @@ export default function ProductDetail ({ route, navigation }) {
             <FieldArray
               name='toppings'
               render={arrayHelper => {
-                return store.getState().topping.toppings.map((topping, index) => {
+                return productData.topping.map((topping, index) => {
                   return <Flex key={index} direction="row" style={{ marginTop: 10 }}>
                     <CheckBox
                       color={'#F6AC31'}
-                      value={formik.values.toppings.indexOf(topping.value) !== -1}
+                      value={formik.values.toppingid.indexOf(topping.toppingid) !== -1}
                       onValueChange={() => {
-                        formik.values.toppings.indexOf(topping.value) === -1
-                          ? arrayHelper.push(topping.value)
-                          : arrayHelper.remove(formik.values.toppings.indexOf(topping.value))
+                        formik.values.toppingid.indexOf(topping.value) === -1
+                          ? arrayHelper.push(topping.toppingid)
+                          : arrayHelper.remove(formik.values.toppingid.indexOf(topping.toppingid))
                       }} />
-                    <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16, marginLeft: 5 }}>{topping.name}</Text>
+                    <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16, marginLeft: 5 }}>{topping.nametopping}</Text>
                     <Spacer />
                     <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 16 }}>{formatCurrency({ amount: topping.price, code: 'VND' })[0]}</Text>
                   </Flex>
