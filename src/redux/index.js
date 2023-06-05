@@ -2,6 +2,7 @@ import { authActions, authReducers } from './auth'
 import { cartActions, cartReducer } from './cart'
 import { categoryActions, categoryReducer } from './category'
 import { drinkItemActions, drinkItemReducer } from './drinkItem'
+import { orderActions, orderReducer } from './order'
 import { profileActions, profileReducer } from './profile'
 import { toppingActions, toppingReducer } from './topping'
 
@@ -11,7 +12,8 @@ const actions = {
   category: categoryActions,
   topping: toppingActions,
   cart: cartActions,
-  profile: profileActions
+  profile: profileActions,
+  order: orderActions
 }
 
 const reducer = {
@@ -20,7 +22,8 @@ const reducer = {
   categoryReducer,
   toppingReducer,
   cartReducer,
-  profileReducer
+  profileReducer,
+  orderReducer
 }
 
 export { actions, reducer }

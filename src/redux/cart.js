@@ -12,10 +12,12 @@ const slice = createSlice({
     },
     removeItem: (state, actions) => {
       console.log(actions.payload)
-      state.items.splice(actions.payload)
+      const temp = state.items.splice(actions.payload)
+      state.item = temp
     },
     clear: (state) => {
-      state.items = []
+      const clear = []
+      state.items = clear
     },
     calculatePrice: (state) => {
       let price = 0

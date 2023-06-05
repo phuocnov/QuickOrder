@@ -12,6 +12,7 @@ import { cartActions } from '../../redux/cart'
 import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import order from '../../api/order'
+import { orderActions } from '../../redux/order'
 
 export default function ShoppingCart ({ navigation }) {
   const { width } = useWindowDimensions()
@@ -42,9 +43,10 @@ export default function ShoppingCart ({ navigation }) {
       console.log(values)
       order.order(values).then(res => {
         console.log(res.data)
-        cartActions.clear()
-        cartActions.saveToStorage()
-        setCartItem([])
+        dispatch(cartActions.clear())
+        dispatch(cartActions.saveToStorage())
+        dispatch(orderActions.setRequestFetch(true))
+        navigation.navigate('home')
       })
     }
   })
@@ -100,7 +102,6 @@ export default function ShoppingCart ({ navigation }) {
 
         { cartItems.length > 0
           ? cartItems.map((item, index) => {
-            console.log(item)
             return <Box key={index} style={{ width: width * 0.9, marginLeft: 20 }}>
               <Flex direction='row'>
                 <Image style={{ width: 80, height: 80, borderRadius: 20 }} source={{ uri: item.productData.drink.drinkimage }} />

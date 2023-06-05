@@ -7,7 +7,8 @@ const rootReducer = {
   category: reducer.categoryReducer,
   topping: reducer.toppingReducer,
   cart: reducer.cartReducer,
-  profile: reducer.profileReducer
+  profile: reducer.profileReducer,
+  order: reducer.orderReducer
 }
 
 const store = configureStore({

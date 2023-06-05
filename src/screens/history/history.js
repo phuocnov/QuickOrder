@@ -3,34 +3,34 @@ import React, { useState, useEffect } from 'react'
 import { ScrollView, useWindowDimensions, View } from 'react-native'
 import HistoryItem from '../../components/history/historyItem'
 import order from '../../api/order'
+import { useDispatch } from 'react-redux'
+import { orderActions } from '../../redux/order'
+import store from '../../redux/store'
 
 export default function HistoryPage (props) {
-  // const orders = [
-  //   {
-  //     status: 'Completed',
-  //     address: '123/89 Võ Văn Ngân, TP Thủ Đức',
-  //     orderdate: 'Mon, 20 Feb 2023 17:44:01 GMT',
-  //     totalprice: '200000',
-  //     orderdetail: 'Trà sữa thập cẩm(x2), Size L, Cafe sữa(X1), Size S, Topping: Trân Châu Trắng, Thạch dừa'
-  //   },
-  //   {
-  //     status: 'Cancelled',
-  //     address: '97 Man Thiện, phường Hiệp Phú, thành phố Thủ Đức, thành phố Hồ Chí Minh',
-  //     orderdate: 'Wed, 15 Mar 2023 10:02:40 GMT',
-  //     totalprice: '200000',
-  //     orderdetail: 'Trà sữa thập cẩm(x2), Size L, Cafe sữa(X1), Size S, Topping: Trân Châu Trắng, Thạch dừa'
-  //   }
-  // ]
   const [orders, setOrders] = useState([])
+  const dispatch = useDispatch()
+
+  store.subscribe(() => {
+    setOrders(store.getState().order.historyOrders)
+    if (store.getState().order.requestFetch === true) fetchOrder()
+  })
 
   async function fetchOrder () {
     const data = await order.history()
-    setOrders(data.data.data)
     console.log(data.data.data)
+    dispatch(orderActions.setHistoryOrders(data.data.data))
+    dispatch(orderActions.setRequestFetch(false))
   }
   useEffect(() => {
-    fetchOrder()
-  }, [])
+    if (store.getState().order.historyOrders.length === 0) {
+      console.log('fetching....')
+      fetchOrder()
+    }
+    if (orders.length === 0) {
+      setOrders(store.getState().order.historyOrders)
+    }
+  }, [orders])
 
   const { width, height } = useWindowDimensions()
   return <View style={{ display: 'flex', width, height, flex: 1, backgroundColor: '#ccc' }}>
